@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    User Account
+{% endblock %}
+
+{% block main %}
+    <br>
+    <div class="container">
+    <h6 class="fw-light topright">Available credit: {{ credit | usd }}</h6>
+        <div class="row">
+            <div class="col">
+                <form action="/user" method="post">
+                    <div class="mb-3">
+                        <h5>Change password</h5>
+                        <br>
+                        <p class="fw-light">Password must include:</p>
+                        <ul class="fw-light list-unstyled">
+                            <li>min. 8 characters</li>
+                            <li>min. 1 lower-case letter</li>
+                            <li>min. 1 upper-case letter</li>
+                            <li>min. 1 digit</li>
+                            <li>min. 1 special sign (!, @, #, $, %, ^, &, *, (, ), -, _ )</li>
+                        </ul>
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control fw-light mx-auto w-auto" id="password" name="new_password" placeholder="New password" type="password">
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control mx-auto w-auto" id="password" name="confirmation" placeholder="Repeat" type="password">
+                    </div>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+            </div>
+            <div class="col">
+                <h5>Deposit / withdraw money</h5>
+                    <br>
+                    <form action="/user" method="post">
+                        <select class="form-select fw-light mx-auto w-auto mb-3" name="transaction">
+                            <option class="fw-light selected disabled">Transaction</option>
+                            <option class="fw-light" value="deposit">Deposit</option>
+                            <option class="fw-light" value="deposit">Withdraw</option>
+                        </select>
+                        <div class="mb-3">
+                            <input class="fw-light form-control mx-auto w-auto" id="money" name="money" placeholder="Amount in USD" type="text">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

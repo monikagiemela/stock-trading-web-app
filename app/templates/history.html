@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Your stock wallet
+{%  endblock %}
+
+{% block main %}
+    <div class="table-responsive">
+        <table class="table table-light">
+            <tr>
+                <td class="text-start">Available cash: {{ user_credit | usd }}</td>
+                <td class="text-start">Starting credit: $10,000.00</td>
+                <td class="text-start">Total deposits: {{ total_deposits | usd }}</td>
+            </tr>
+            <tr>
+                <td class="text-start">Locked cash: {{ locked | usd }}</td>
+                <td class="text-start">Gain/Loss:
+                    <span>
+                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Proportion of available credit (decreased by all deposits and increased by all withdrawals) to starting capital"><ion-icon id="info_icon" name="information-circle-outline"></ion-icon></a>
+                    </span> {{ (gain / 100) | round(2) }}%
+                </td>
+                <td class="text-start">Total withdrawals: {{ total_withdrawals | usd }}</td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <h4 class="fw-light">All your transactions</h4>
+    <br>
+        {% if user_transactions | length > 0 %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="table-dark">
+                    <th class="text-start">#</th>
+                    <th class="text-start">Symbol</th>
+                    <th class="text-start">Name</th>
+                    <th class="text-start">Transaction</th>
+                    <th class="text-end">Shares</th>
+                    <th class="text-end">Transaction Price</th>
+                    <th class="text-end">Total</th>
+                </thead>
+                {% set counter = [1] %}
+                {% for row in user_transactions %}
+                <tr>
+                    <td class="text-start">{{ counter | length }}</td>
+                    {% set var = counter.append(1) %}
+                    <td class="text-start">{{ row["symbol"] | upper }}</td>
+                    <td class="text-start">{{ row["name"] }}</td>
+                    <td class="text-start">{{row["trans"] }}</td>
+                    <td class="text-end">{{ row["quantity"] | absolute }}</td>
+                    <td class="text-end">{{row["price"] | usd }}</td>
+                    <td class="text-end">{{ (row["quantity"] * row["price"]) | absolute | usd }}</td>
+                </tr>
+
+                {% endfor %}
+            </table>
+        </div>
+            {% else %}
+                <p>You have not made any transactions yet</p>
+            {% endif %}
+
+{% endblock %}

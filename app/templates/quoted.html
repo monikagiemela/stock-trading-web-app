@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ symbol }}
+{% endblock %}
+
+{% block main %}
+    <h6 class="fw-light topright">Available credit: {{ user_credit | usd }}</h6>
+    <p>STOCK: {{ quote.name }}</p>
+    <p>PRICE: {{ quote.price | usd }}
+    <p>SYMBOL: {{ quote.symbol }}
+    <br>
+    <br>
+    <p class="fw-light">If you would like to buy shares of this stock, enter a number of shares below</p>
+    <form action="/quoted" method="post">
+        <input id="symbol" name="symbol" type="hidden" value={{ symbol }}>
+        <input id="symbol" name="user_credit" type="hidden" value={{ user_credit }}>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="shares" name="shares" placeholder="Number of shares" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Buy</button>
+    </form>
+{% endblock %}
