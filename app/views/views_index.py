@@ -19,16 +19,11 @@ def index():
 
     # Fetches available cash from table "users"
     conn = get_db_connection()
-    print(conn)
-    print("Conn works")
     cur = conn.cursor()
-    print(cur)
-    print("Cur works")
     cur.execute("SELECT cash FROM users WHERE id = (?)", (id,))
-    print("Cur executes")
-    cash_row = cur.fetchone()["cash"]
+    cash_row = cur.fetchone()[0]
     cash = float(cash_row)
-
+    
     # Fetches all open positions from table "transactions" and calculates total quantity of shares for each stock
     cur.execute(
                 """SELECT symbol, name, SUM(quantity) AS shares, price 

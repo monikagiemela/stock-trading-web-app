@@ -13,7 +13,7 @@
             <select class="form-select fw-light mx-auto w-auto" name="symbol">
                 <option disabled selected>Stock symbol</option>
                 {% for symbol in list_of_stocks %}
-                    <option value={{ symbol }}>{{ symbol }}</option>
+                    <option value={{ symbol }}>{{ symbol | upper }}</option>
                 {% endfor %}
             </select>
         </div>

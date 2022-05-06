@@ -33,59 +33,59 @@ def user():
         if new_password:    
             if new_password != confirmation:
                 return apology("Make sure that New Password and Confirmation match", 400)
-            elif len(new_password) < 8:
+            if len(new_password) < 8:
                 return apology("Make sure your password is at lest 8 characters", 400)
         
-        characters = ["[0-9]", "[A-Z]", "[a-z]", "[!@#$%^&*()-_]"]
-        if not re.search(characters[0], new_password):
-            return apology("Make sure your password has a number in it", 400)
-        elif not re.search(characters[1], new_password):
-            return apology("Make sure your password has a capital letter in it", 400)
-        elif not re.search(characters[2], new_password):
-            return apology("Make sure your password has a lower-case letter in it", 400)
-        elif not re.search(characters[3], new_password):
-            return apology("Make sure your password has a special sign in it", 400)
+        #characters = ["[0-9]", "[A-Z]", "[a-z]", "[!@#$%^&*()-_]"]
+            if not re.search("[0-9]", new_password):
+                return apology("Make sure your password has a number in it", 400)
+            if not re.search("[A-Z]", new_password):
+                return apology("Make sure your password has a capital letter in it", 400)
+            if not re.search("[a-z]", new_password):
+                return apology("Make sure your password has a lower-case letter in it", 400)
+            if not re.search("[!@#$%^&*()-_]", new_password):
+                return apology("Make sure your password has a special sign in it", 400)
 
-        # Updates database 
-        cur.execute("UPDATE users SET hash = ? WHERE id = (?)", 
-                    (generate_password_hash(
-                    new_password, method='pbkdf2:sha256', salt_length=8), 
-                    id))
-        conn.commit()
-        conn.close()
-
-        flash("You have successfuly changed your password")
-        return render_template("user.html")
-
-    elif amount:
-        # If user chose to deposit money
-        if transaction == "deposit":
-            credit += float(amount)
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute("UPDATE users SET cash = ? WHERE id = (?)", (
-                        credit, id))
-            conn.commit()
-            cur.execute("""INSERT INTO traffic (
-                        trans, amount, user_id) VALUES (?, ?, ?)""", (
-                        transaction, amount, id))
+            # Updates database 
+            cur.execute("UPDATE users SET hash = ? WHERE id = (?)", 
+                        (generate_password_hash(
+                        new_password, method='pbkdf2:sha256', salt_length=8), 
+                        id))
             conn.commit()
             conn.close()
 
-            flash("You have successfuly deposited money to your account")
-            return render_template("user.html", credit=credit)
-        # If user chose to withdraw money
-        elif transaction == "withdraw":
-            credit -= float(amount)
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute("UPDATE users SET cash = ? WHERE id = (?)", (
-                        credit, id))
-            conn.commit()
-            cur.execute("""INSERT INTO traffic (trans, amount, user_id) 
-                        VALUES (?, ?, ?)""", (transaction, amount, id))
-            conn.commit()
-            conn.close()
+            flash("You have successfuly changed your password")
+            return render_template("user.html")
 
-            flash("You have successfuly sent money to your bank account")
-            return render_template("user.html", credit=credit)
+        elif amount:
+            # If user chose to deposit money
+            if transaction == "deposit":
+                credit += float(amount)
+                conn = get_db_connection()
+                cur = conn.cursor()
+                cur.execute("UPDATE users SET cash = ? WHERE id = (?)", (
+                            credit, id))
+                conn.commit()
+                cur.execute("""INSERT INTO traffic (
+                            trans, amount, user_id) VALUES (?, ?, ?)""", (
+                            transaction, amount, id))
+                conn.commit()
+                conn.close()
+
+                flash("You have successfuly deposited money to your account")
+                return render_template("user.html", credit=credit)
+            # If user chose to withdraw money
+            elif transaction == "withdraw":
+                credit -= float(amount)
+                conn = get_db_connection()
+                cur = conn.cursor()
+                cur.execute("UPDATE users SET cash = ? WHERE id = (?)", (
+                            credit, id))
+                conn.commit()
+                cur.execute("""INSERT INTO traffic (trans, amount, user_id) 
+                            VALUES (?, ?, ?)""", (transaction, amount, id))
+                conn.commit()
+                conn.close()
+
+                flash("You have successfuly sent money to your bank account")
+                return render_template("user.html", credit=credit)

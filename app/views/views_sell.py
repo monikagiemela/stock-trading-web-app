@@ -15,7 +15,6 @@ from app.helpers import apology, login_required, lookup, usd, absolute
 @login_required
 def sell():
     """Sell shares of stock"""
-
     id = session.get("user_id")
     conn = get_db_connection()
     cur = conn.cursor()
@@ -37,7 +36,7 @@ def sell():
 
     else:
         # Checkes if user chose a symbol and fetches full name and price of the stock from IEX API
-        symbol = request.form.get("symbol")
+        symbol = request.form.get("symbol").lower()
         quote = lookup(symbol)
         if not symbol or not quote:
             return apology("Enter a valid stock symbol", 403)
@@ -62,8 +61,8 @@ def sell():
         transaction = "sell"
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("""UPDATE users SET cash = ? WHERE id = (?)""", 
-                    user_credit + (price * shares), (id))
+        cur.execute("UPDATE users SET cash = (?) WHERE id = (?)", 
+                    (user_credit + (price * shares), id))
         conn.commit()
         cur.execute("""INSERT INTO transactions (
                     symbol, name, quantity, price, user_id, trans) 

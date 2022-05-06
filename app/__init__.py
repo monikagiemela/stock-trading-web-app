@@ -7,7 +7,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.helpers import apology, login_required, lookup, usd, absolute
+from app.helpers import apology, login_required, lookup, lookup_end_day_chart, plot_chart, usd, absolute
 
 # Configure application
 app = Flask(__name__)
@@ -53,3 +53,4 @@ from app.views.views_quote import quote
 from app.views.views_quoted import quoted
 from app.views.views_register import register
 from app.views.views_sell import sell
+from app.views.views_user import user

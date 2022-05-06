@@ -2,6 +2,7 @@ import os
 import re
 
 import sqlite3
+from sqlite3 import DatabaseError
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from tempfile import mkdtemp
@@ -15,20 +16,18 @@ from app.helpers import apology, login_required, lookup, usd, absolute
 @login_required
 def buy():
     """Buy shares of stock"""
-
     id = session.get("user_id")
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE id = (?)", (id,))
-    rows = cur.fetchone()
-    user_credit = rows["cash"]
-
+    cur.execute("SELECT cash FROM users WHERE id = (?)", (id,))
+    user_credit = cur.fetchone()[0]
+    
     if request.method == "GET":
         return render_template("buy.html", user_credit=user_credit)
 
     else:
         # Checkes if user enteres a valid symbol and fetches full name and price of the stock from IEX API
-        symbol = request.form.get("symbol")
+        symbol = request.form.get("symbol").lower()
         quote = lookup(symbol)
         if not symbol or not quote:
             return apology("Enter a valid stock symbol", 400)
@@ -53,12 +52,19 @@ def buy():
 
         # Updates database
         transaction = "buy"
-        cur.execute("""INSERT INTO transactions (
-                    symbol, name, quantity, price, user_id, trans) 
-                    VALUES (?, ?, ?, ?, ?, ?)""", (
-                    symbol, name, shares, price, id, transaction))
-        cur.execute("UPDATE users SET cash = (?) WHERE id = (?)", (user_credit, id))
-        conn.commit()
+        cur.execute("BEGIN TRANSACTION")
+        try:
+            cur.execute("UPDATE users SET cash = (?) WHERE id = (?)", 
+                        (user_credit, id))
+            cur.execute("""INSERT INTO transactions 
+                        (symbol, name, quantity, price, user_id, trans) 
+                        VALUES (?, ?, ?, ?, ?, ?)""",
+                    (symbol, name, shares, price, id, transaction))     
+            conn.commit()
+        except DatabaseError:
+            print("failed!")
+            cur.execute("rollback")
+  
         conn.close()
 
         flash("You have successfuly bought shares")

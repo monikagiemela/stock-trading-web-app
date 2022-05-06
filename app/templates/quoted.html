@@ -8,7 +8,7 @@
     <h6 class="fw-light topright">Available credit: {{ user_credit | usd }}</h6>
     <p>STOCK: {{ quote.name }}</p>
     <p>PRICE: {{ quote.price | usd }}
-    <p>SYMBOL: {{ quote.symbol }}
+    <p>SYMBOL: {{ quote.symbol | upper}}
     <br>
     <br>
     <p class="fw-light">If you would like to buy shares of this stock, enter a number of shares below</p>

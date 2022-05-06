@@ -19,19 +19,18 @@ def quote():
     id = session.get("user_id")
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE id = (?)", (id,))
-    rows = cur.fetchall() 
+    cur.execute("SELECT cash FROM users WHERE id = (?)", (id,))
+    rows = cur.fetchone() 
+    user_credit = rows[0]
     conn.close()
-    user_credit = rows[0]["cash"]
 
     if request.method == "GET":
         return render_template("quote.html", user_credit=user_credit)
 
     else:
-        # Checkes if user enteres a valid symbol and fetches full name and price of the stock from IEX API
-        symbol = request.form.get("symbol")
+        # Checke if user enteres a valid symbol and fetch full name and price of the stock from IEX API
+        symbol = request.form.get("symbol").lower()
         quote = lookup(symbol)
         if not symbol or not quote:
             return apology("Enter a valid stock symbol", 400)
-
-        return render_template("quoted.html", quote=quote, symbol=symbol, user_credit=user_credit)
+        return render_template("quoted.html", quote=quote, symbol=symbol, user_credit=user_credit, plot_url=plot_url)
