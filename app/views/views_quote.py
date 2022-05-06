@@ -33,4 +33,4 @@ def quote():
         quote = lookup(symbol)
         if not symbol or not quote:
             return apology("Enter a valid stock symbol", 400)
-        return render_template("quoted.html", quote=quote, symbol=symbol, user_credit=user_credit, plot_url=plot_url)
+        return render_template("quoted.html", quote=quote, symbol=symbol, user_credit=user_credit)

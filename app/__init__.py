@@ -7,7 +7,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.helpers import apology, login_required, lookup, lookup_end_day_chart, plot_chart, usd, absolute
+from app.helpers import apology, login_required, lookup, usd, absolute
 
 # Configure application
 app = Flask(__name__)
