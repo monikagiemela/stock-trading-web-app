@@ -36,7 +36,6 @@ def user():
             if len(new_password) < 8:
                 return apology("Make sure your password is at lest 8 characters", 400)
         
-        #characters = ["[0-9]", "[A-Z]", "[a-z]", "[!@#$%^&*()-_]"]
             if not re.search("[0-9]", new_password):
                 return apology("Make sure your password has a number in it", 400)
             if not re.search("[A-Z]", new_password):
