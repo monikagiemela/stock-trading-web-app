@@ -1,9 +1,12 @@
 import os
+from cv2 import DFT_REAL_OUTPUT
 import requests
 import urllib.parse
 
 from flask import redirect, render_template, request, session
 from functools import wraps
+
+import pandas as pd
 
 
 def apology(message, code=400):
@@ -54,6 +57,22 @@ def lookup(symbol):
     except (KeyError, TypeError, ValueError):
         return None
 
+def end_day_lookup(symbol):
+    print("end_day is running")
+    
+    try:
+        API_KEY = os.environ.get("API_KEY") 
+        url = f"https://cloud.iexapis.com/stable/stock/{urllib.parse.quote_plus(symbol)}/chart/20220508?token={API_KEY}"         
+        response = requests.get(url)
+        print(response)
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+    
+    print(response.status_code)
+    #df = pd.read_csv(response)
+    
+    #return df
 
 def usd(value):
     """Format value as USD."""
